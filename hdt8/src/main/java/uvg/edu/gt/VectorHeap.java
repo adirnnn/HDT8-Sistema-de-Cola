@@ -3,7 +3,8 @@ package uvg.edu.gt;
 import java.util.Vector;
 
 public class VectorHeap<E extends Comparable<E>> implements PriorityQueue<E> {
-    protected Vector<E> data; // the data, kept in heap order
+    // El vector que contiene los elementos del heap
+    protected Vector<E> data;
 
     public VectorHeap() {
         data = new Vector<>();
@@ -11,24 +12,30 @@ public class VectorHeap<E extends Comparable<E>> implements PriorityQueue<E> {
 
     public VectorHeap(Vector<E> v) {
         int i;
-        data = new Vector<>(v.size()); // we know ultimate size
-        for (i = 0; i < v.size(); i++) { // add elements to heap
+        // Crea un nuevo vector con el mismo tamaño que v
+        data = new Vector<>(v.size());
+        // Agrega los elementos de v al heap
+        for (i = 0; i < v.size(); i++) {
             add(v.get(i));
         }
     }
 
+    // Método que devuelve el índice del padre de un nodo dado
     protected static int parent(int i) {
         return (i - 1) / 2;
     }
 
+    // Método que devuelve el índice del hijo izquierdo de un nodo dado
     protected static int left(int i) {
         return 2 * i + 1;
     }
 
+    // Método protegido que devuelve el índice del hijo derecho de un nodo dado
     protected static int right(int i) {
         return 2 * (i + 1);
     }
 
+    // Método que ajusta el heap hacia arriba a partir de un nodo dado
     protected void percolateUp(int leaf) {
         int parent = parent(leaf);
         E value = data.get(leaf);
@@ -40,11 +47,14 @@ public class VectorHeap<E extends Comparable<E>> implements PriorityQueue<E> {
         data.set(leaf, value);
     }
 
+
+    // Método que agrega un elemento al heap y ajusta el heap hacia arriba si es necesario
     public void add(E value) {
         data.add(value);
         percolateUp(data.size() - 1);
     }
 
+    // Método que ajusta el heap hacia abajo a partir de la raíz
     protected void pushDownRoot(int root) {
         int heapSize = data.size();
         E value = data.get(root);
@@ -54,21 +64,21 @@ public class VectorHeap<E extends Comparable<E>> implements PriorityQueue<E> {
                 if ((right(root) < heapSize) && ((data.get(childpos + 1)).compareTo(data.get(childpos)) < 0)) {
                     childpos++;
                 }
-                // Assert: childpos indexes smaller of two children
                 if ((data.get(childpos)).compareTo(value) < 0) {
                     data.set(root, data.get(childpos));
-                    root = childpos; // keep moving down
-                } else { // found right location
+                    root = childpos;
+                } else {
                     data.set(root, value);
                     return;
                 }
-            } else { // at a leaf! insert and halt
+            } else {
                 data.set(root, value);
                 return;
             }
         }
     }
 
+    // Método que elimina y devuelve el elemento de mayor prioridad del heap
     public E remove() {
         E minVal = getFirst();
         data.set(0, data.get(data.size() - 1));
@@ -77,26 +87,31 @@ public class VectorHeap<E extends Comparable<E>> implements PriorityQueue<E> {
         return minVal;
     }
 
+    // Método que verifica si el heap está vacío
     @Override
     public boolean isEmpty() {
         return data.isEmpty();
     }
 
+    // Método que devuelve el número de elementos en el heap
     @Override
     public int size() {
         return data.size();
     }
 
+    // Método que elimina todos los elementos del heap
     @Override
     public void clear() {
         data.clear();
     }
 
+    // Método que devuelve el elemento de mayor prioridad en el heap sin eliminarlo
     @Override
     public E getFirst() {
         return data.firstElement();
     }
 
+    // Método que agrega un elemento al heap con la prioridad especificada
     @Override
     public void add(E value, double priority) {
         add(value);
